@@ -325,7 +325,7 @@ const apiUrl = `${API_BASE_URL}api/registration/download/${registrationId}/${fil
  const handleViewFile = async (registrationId, fileType, fileName) => {
   try {
     setFileLoading(true);
-    const fileUrl = `${API_BASE_URL}api/registration/view/${registrationId}/${fileType}`;
+    const fileUrl = `${API_BASE_URL}/api/registration/view/${registrationId}/${fileType}`;
     
     // First check if the file exists by making a HEAD request or GET request
     const response = await fetch(fileUrl, {
