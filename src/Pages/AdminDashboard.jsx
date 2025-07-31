@@ -71,7 +71,7 @@ const AdminDashboard = () => {
 
 
   // API Base URL
-  const API_BASE_URL = 'http://localhost:5000/api';
+  const API_BASE_URL = 'https://trading-professor-server.onrender.com/';
 
   // Show notification
   const showNotification = (message, type = 'success') => {
@@ -324,16 +324,12 @@ const handleDownloadFile = async (registrationId, fileType, fileName) => {
     setFileLoading(true);
     const fileUrl = `${API_BASE_URL}/registration/view/${registrationId}/${fileType}`;
     
-    // First check if the file exists by making a HEAD request or GET request
     const response = await fetch(fileUrl, {
-      method: 'HEAD', // Just check if file exists without downloading
-      headers: {
-        'Authorization': `Bearer ${token}`, // Add if you have authentication
-      }
+      method: 'HEAD',
+      // Remove the Authorization header since token is not defined
     });
 
     if (!response.ok) {
-      // If HEAD request fails, try GET to get the actual error message
       const getResponse = await fetch(fileUrl);
       const errorData = await getResponse.json();
       
