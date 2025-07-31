@@ -313,7 +313,8 @@ const handleDownloadFile = async (registrationId, fileType, fileName) => {
     }
    
     setFileLoading(false);
-  }
+  
+
   }
 };
 
