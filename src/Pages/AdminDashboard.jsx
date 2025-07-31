@@ -83,7 +83,7 @@ const AdminDashboard = () => {
   const fetchRegistrations = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/registration/all`);
+      const response = await fetch(`${API_BASE_URL}api/registration/all`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -116,7 +116,7 @@ const AdminDashboard = () => {
   // Fetch payments
   const fetchPayments = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/payments/all`);
+      const response = await fetch(`${API_BASE_URL}payments/all`);
       if (!response.ok) {
         throw new Error('Failed to fetch payments');
       }
@@ -139,7 +139,7 @@ const AdminDashboard = () => {
   // Update registration status
   const updateRegistrationStatus = async (registrationId, newStatus) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/registration/${registrationId}/status`, {
+      const response = await fetch(`${API_BASE_URL}registration/${registrationId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ const AdminDashboard = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/registration/${registrationId}`, {
+      const response = await fetch(`${API_BASE_URL}api/registration/${registrationId}`, {
         method: 'DELETE',
       });
 
@@ -325,7 +325,7 @@ const apiUrl = `${API_BASE_URL}api/registration/download/${registrationId}/${fil
  const handleViewFile = async (registrationId, fileType, fileName) => {
   try {
     setFileLoading(true);
-    const fileUrl = `${API_BASE_URL}/api/registration/view/${registrationId}/${fileType}`;
+    const fileUrl = `${API_BASE_URL}api/registration/view/${registrationId}/${fileType}`;
     
     // First check if the file exists by making a HEAD request or GET request
     const response = await fetch(fileUrl, {
