@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 const AnimatedBackground = () => {
   // const [particles, setParticles] = useState([]);
+  <span className="block sm:inline-block sm:ml-2 text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mt-1 sm:mt-0">
+            FREE
+          </span>
 
   // // Generate random particles
   // useEffect(() => {

@@ -32,7 +32,13 @@ const handleEnroll = (course) => {
   navigate(`/register?courseName=${encodeURIComponent(course.name)}`);
 };
 
-
+const handleEnrollFreePhase = (course) => {
+  console.log('Course clicked:', course);
+  console.log('Course name:', course.nameFree);
+  console.log('Navigating to:', `/register?courseName=${encodeURIComponent(course.name)}`);
+  
+  navigate(`/register?courseName=${encodeURIComponent(course.name)}`);
+};
 // watsapp
 
  const whatsappNumber = "919363238386";
@@ -174,7 +180,8 @@ const handleEnroll = (course) => {
 
     const allPhasesPackageFree=   {
   id: 4,
-  name: "Complete Master Package",
+  name: "Complete Master Package Free",
+  
   subtitle: "All 3 Phases + Bonuses",
   price: "₹5,000 Refundable",
   originalPrice:  "₹89,999",
@@ -202,7 +209,28 @@ const handleEnroll = (course) => {
   ]
 }
 
-  
+  // Function to extract and highlight "Free" from the name
+  const renderNameWithHighlightedFree = (name) => {
+    const words = name.split(' ');
+    const freeIndex = words.findIndex(word => word.toLowerCase() === 'free');
+    
+    if (freeIndex === -1) return name;
+    
+    const beforeFree = words.slice(0, freeIndex).join(' ');
+    const freeWord = words[freeIndex];
+    const afterFree = words.slice(freeIndex + 1).join(' ');
+    
+    return (
+      <>
+        {beforeFree && <span>{beforeFree} </span>}
+        <span className="block sm:inline-block sm:ml-2 text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mt-1 sm:mt-0">
+          {freeWord.toUpperCase()}
+        </span>
+        {afterFree && <span className="block sm:inline"> {afterFree}</span>}
+      </>
+    );
+  };
+
   //   <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
   //     <div className="bg-gray-900 rounded-2xl border border-gray-700 max-w-md w-full p-6">
   //       <div className="text-center mb-6">
@@ -478,85 +506,74 @@ const handleEnroll = (course) => {
 </div>
 
 {/* Free Package */}
-<div className="mb-12">
-  <div className="bg-gradient-to-br from-blue-500/10 to-purple-600/10 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-4 sm:p-6 lg:p-8 relative overflow-hidden">
-    
-    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-2 py-1 sm:px-4 sm:py-1 rounded-full text-xs sm:text-sm font-semibold text-center">
-      <span className="block sm:hidden">FREE ACCESS</span>
-      <span className="hidden sm:block">LIMITED TIME FREE ACCESS</span>
-    </div>
-
-    <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center mt-8 sm:mt-4 lg:mt-0">
-      <div>
-        <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-          {allPhasesPackageFree.name}
-          <span className="block sm:inline-block sm:ml-2 text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mt-1 sm:mt-0">
-            FREE
-          </span>
-        </h3>
-        <p className="text-blue-300 text-base sm:text-lg mb-4">{allPhasesPackageFree.subtitle}</p>
-
-        <div className="flex flex-col sm:flex-row sm:items-baseline sm:space-x-4 mb-6 gap-2 sm:gap-0">
-          <span className="text-xl font-bold text-white">{allPhasesPackageFree.price}</span>
-          <span className="text-lg text-gray-400 line-through">{allPhasesPackageFree.originalPrice}</span>
+<div className="mb-12 bg-gray-900 p-8">
+      <div className="bg-gradient-to-br from-blue-500/10 to-purple-600/10 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-4 sm:p-6 lg:p-8 relative overflow-hidden">
+        <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-2 py-1 sm:px-4 sm:py-1 rounded-full text-xs sm:text-sm font-semibold text-center">
+          <span className="block sm:hidden">FREE ACCESS</span>
+          <span className="hidden sm:block">LIMITED TIME FREE ACCESS</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-300 mb-6">
-          <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 flex-shrink-0" />
-            <span>{allPhasesPackageFree.duration}</span>
-            <span>{allPhasesPackageFree.sessions}</span>
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center mt-8 sm:mt-4 lg:mt-0">
+          <div>
+            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+              {renderNameWithHighlightedFree(allPhasesPackageFree.name)}
+            </h3>
+            <p className="text-blue-300 text-base sm:text-lg mb-4">{allPhasesPackageFree.subtitle}</p>
+
+            <div className="flex flex-col sm:flex-row sm:items-baseline sm:space-x-4 mb-6 gap-2 sm:gap-0">
+              <span className="text-xl font-bold text-white">{allPhasesPackageFree.price}</span>
+              <span className="text-lg text-gray-400 line-through">{allPhasesPackageFree.originalPrice}</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-300 mb-6">
+              <div className="flex items-center space-x-2">
+                <Clock className="w-4 h-4 flex-shrink-0" />
+                <span>{allPhasesPackageFree.duration}</span>
+                <span>{allPhasesPackageFree.sessions}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <TrendingUp className="w-4 h-4 flex-shrink-0" />
+                <span>{allPhasesPackageFree.level}</span>
+              </div>
+            </div>
+
+            {/* Terms and Conditions */}
+            <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-3 sm:p-4 mb-6">
+              <h4 className="text-blue-300 font-semibold text-sm mb-2 flex items-center">
+                <Shield className="w-4 h-4 mr-2" />
+                Terms & Conditions
+              </h4>
+              <ul className="text-xs sm:text-sm text-gray-300 space-y-1">
+                <li className="flex items-start space-x-2">
+                  <CheckCircle className="w-3 h-3 text-green-400 flex-shrink-0 mt-0.5" />
+                  <span>100% Refund Available within 7 days</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle className="w-3 h-3 text-green-400 flex-shrink-0 mt-0.5" />
+                  <span>Limited time offer - subject to availability</span>
+                </li>
+              </ul>
+            </div>
+
+            <button
+              onClick={() => handleEnroll(allPhasesPackageFree)}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
+            >
+              Enroll Free Phase
+            </button>
           </div>
-          <div className="flex items-center space-x-2">
-            <TrendingUp className="w-4 h-4 flex-shrink-0" />
-            <span>{allPhasesPackageFree.level}</span>
+
+          <div className="space-y-3 mt-6 lg:mt-0">
+            {allPhasesPackageFree.features.map((feature, index) => (
+              <div key={index} className="flex items-center space-x-3">
+                <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0" />
+                <span className="text-gray-300 text-sm sm:text-base">{feature}</span>
+              </div>
+            ))}
           </div>
         </div>
-
-        {/* Terms and Conditions */}
-        <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-3 sm:p-4 mb-6">
-          <h4 className="text-blue-300 font-semibold text-sm mb-2 flex items-center">
-            <Shield className="w-4 h-4 mr-2" />
-            Terms & Conditions
-          </h4>
-          <ul className="text-xs sm:text-sm text-gray-300 space-y-1">
-            <li className="flex items-start space-x-2">
-              <CheckCircle className="w-3 h-3 text-green-400 flex-shrink-0 mt-0.5" />
-              <span>100% Refund Available within 7 days</span>
-            </li>
-           <li className="flex items-start space-x-2">
-              <CheckCircle className="w-3 h-3 text-green-400 flex-shrink-0 mt-0.5" />
-              <span>Limited time offer - subject to availability</span>
-            </li>
-          </ul>
-        </div>
-
-             <button
-  onClick={() => {
-    navigate('/register', {
-      state: {
-        name: allPhasesPackageFree.name,
-        amount:allPhasesPackageFree.price, // or phase.amount if your data has that key
-      },
-    });
-  }}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
-        >
-          Enroll Free Phase
-        </button>
-      </div>
-
-      <div className="space-y-3 mt-6 lg:mt-0">
-        {allPhasesPackageFree.features.map((feature, index) => (
-          <div key={index} className="flex items-center space-x-3">
-            <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0" />
-            <span className="text-gray-300 text-sm sm:text-base">{feature}</span>
-          </div>
-        ))}
       </div>
     </div>
-  </div>
-</div>
 
         {/* Class Schedule */}
    <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 mb-12">   
