@@ -32,13 +32,6 @@ const handleEnroll = (course) => {
   navigate(`/register?courseName=${encodeURIComponent(course.name)}`);
 };
 
-const handleEnrollFreePhase = (course) => {
-  console.log('Course clicked:', course);
-  console.log('Course name:', course.nameFree);
-  console.log('Navigating to:', `/register?courseName=${encodeURIComponent(course.name)}`);
-  
-  navigate(`/register?courseName=${encodeURIComponent(course.name)}`);
-};
 // watsapp
 
  const whatsappNumber = "919363238386";
