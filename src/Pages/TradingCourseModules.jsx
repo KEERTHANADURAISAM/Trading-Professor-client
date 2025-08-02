@@ -32,6 +32,7 @@ const handleEnroll = (course) => {
   navigate(`/register?courseName=${encodeURIComponent(course.name)}`);
 };
 
+
 // watsapp
 
  const whatsappNumber = "919363238386";
