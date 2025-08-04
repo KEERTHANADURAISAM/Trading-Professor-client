@@ -72,6 +72,7 @@ const AdminDashboard = () => {
 
   // API Base URL
   const API_BASE_URL = 'https://trading-professor-server.onrender.com/';
+  // const API_BASE_URL = 'http://localhost:5000/';
 
   // Show notification
   const showNotification = (message, type = 'success') => {
@@ -199,14 +200,14 @@ const AdminDashboard = () => {
 const handleDownloadFile = async (registrationId, fileType, fileName) => {
   try {
     console.log('Downloading file:', { registrationId, fileType, fileName });
-    setFileLoading(true)
+    setFileLoading(true);
+    
     // Download URL
-const apiUrl = `${API_BASE_URL}api/registration/download/${registrationId}/${fileType}`;
-// View URL  
-
+    const apiUrl = `${API_BASE_URL}api/registration/download/${registrationId}/${fileType}`;
+    
     console.log('API URL:', apiUrl);
     
-    // Show loading indicator (optional)
+    // Show loading indicator
     const downloadBtn = document.querySelector(`[data-download="${registrationId}-${fileType}"]`);
     if (downloadBtn) {
       downloadBtn.disabled = true;
@@ -229,6 +230,88 @@ const apiUrl = `${API_BASE_URL}api/registration/download/${registrationId}/${fil
       
       if (contentType && contentType.includes('application/json')) {
         errorData = await response.json();
+        
+        // 🔧 ENHANCED ERROR HANDLING with automatic retry
+        if (errorData.allAvailableFiles && Array.isArray(errorData.allAvailableFiles)) {
+          console.log('📁 Available files in server:', errorData.allAvailableFiles);
+          
+          // Try to find similar files
+          const similarFiles = errorData.allAvailableFiles.filter(file => {
+            const filename = file.filename.toLowerCase();
+            return filename.includes(fileType.toLowerCase()) || 
+                   filename.includes(registrationId.toLowerCase()) ||
+                   (errorData.registrationInfo && 
+                    filename.includes(errorData.registrationInfo.name.toLowerCase().replace(/\s+/g, '_')));
+          });
+          
+          console.log('🔍 Found similar files:', similarFiles);
+          
+          if (similarFiles.length > 0) {
+            const suggestedFileName = similarFiles[0].filename;
+            console.log('🔄 Trying automatic download with:', suggestedFileName);
+            
+            // Try downloading with the suggested filename automatically
+            try {
+              const alternativeUrl = `${API_BASE_URL}api/registration/download-by-filename/${suggestedFileName}`;
+              console.log('🔄 Trying alternative download URL:', alternativeUrl);
+              
+              const retryResponse = await fetch(alternativeUrl, {
+                method: 'GET',
+                headers: {
+                  'Accept': 'application/octet-stream, application/pdf, image/*',
+                },
+              });
+              
+              if (retryResponse.ok) {
+                console.log('✅ Alternative download successful');
+                
+                const retryBlob = await retryResponse.blob();
+                
+                if (retryBlob.size > 0) {
+                  const retryUrl = window.URL.createObjectURL(retryBlob);
+                  const retryLink = document.createElement('a');
+                  retryLink.href = retryUrl;
+                  retryLink.download = suggestedFileName;
+                  retryLink.style.display = 'none';
+                  
+                  document.body.appendChild(retryLink);
+                  retryLink.click();
+                  
+                  setTimeout(() => {
+                    window.URL.revokeObjectURL(retryUrl);
+                    document.body.removeChild(retryLink);
+                  }, 100);
+                  
+                  console.log('✅ Alternative download completed successfully');
+                  alert(`File downloaded successfully as: ${suggestedFileName}`);
+                  return; // Success! Exit the function
+                }
+              } else {
+                console.log('❌ Alternative download also failed');
+              }
+            } catch (retryError) {
+              console.error('❌ Retry download failed:', retryError);
+            }
+            
+            // If automatic retry fails, ask user
+            const fileOptions = similarFiles.slice(0, 3).map(f => f.filename).join('\n');
+            const userChoice = confirm(
+              `Original file not found, but found similar files:\n\n${fileOptions}\n\nWould you like to try downloading the first file?`
+            );
+            
+            if (userChoice) {
+              // Try the manual retry
+              window.open(`${API_BASE_URL}api/registration/download-by-filename/${suggestedFileName}`, '_blank');
+              return;
+            }
+          }
+        }
+        
+        // Show search strategies that were tried
+        if (errorData.searchStrategies) {
+          console.log('🔍 Server tried these search strategies:', errorData.searchStrategies);
+        }
+        
       } else {
         errorData = { 
           error: `HTTP ${response.status}: ${response.statusText}`,
@@ -238,8 +321,21 @@ const apiUrl = `${API_BASE_URL}api/registration/download/${registrationId}/${fil
       
       console.error('Server response:', errorData);
       
-      // Show user-friendly error message
-      alert(`File download failed: ${errorData.error || 'Unknown error'}`);
+      // Enhanced user-friendly error message
+      let userMessage = `File download failed: ${errorData.error || 'Unknown error'}`;
+      
+      if (errorData.storedFileName) {
+        userMessage += `\n\nLooking for: ${errorData.storedFileName}`;
+      }
+      
+      if (errorData.allAvailableFiles && errorData.allAvailableFiles.length > 0) {
+        userMessage += `\n\nAvailable files: ${errorData.allAvailableFiles.length} files found`;
+        userMessage += `\n\nContact admin with Registration ID: ${registrationId}`;
+      } else {
+        userMessage += '\n\nNo files found in upload directory.';
+      }
+      
+      alert(userMessage);
       return;
     }
     
@@ -275,7 +371,7 @@ const apiUrl = `${API_BASE_URL}api/registration/download/${registrationId}/${fil
     const a = document.createElement('a');
     a.href = url;
     a.download = downloadFileName;
-    a.style.display = 'none'; // Hide the element
+    a.style.display = 'none';
     
     document.body.appendChild(a);
     a.click();
@@ -287,9 +383,6 @@ const apiUrl = `${API_BASE_URL}api/registration/download/${registrationId}/${fil
     }, 100);
     
     console.log('✅ File download initiated successfully');
-    
-    // Show success message (optional)
-    // alert(`File "${downloadFileName}" downloaded successfully!`);
     
   } catch (error) {
     console.error('Download failed:', error);
@@ -305,10 +398,10 @@ const apiUrl = `${API_BASE_URL}api/registration/download/${registrationId}/${fil
     } else if (error.message.includes('empty')) {
       alert('The downloaded file appears to be empty. Please contact support.');
     } else {
-      alert(`Download failed: ${error.message}. Please try again or contact support.`);
+      alert(`Download failed: ${error.message}. Please try again or contact support.\n\nRegistration ID: ${registrationId}\nFile Type: ${fileType}`);
     }
   } finally {
-    // Reset button state (optional)
+    // Reset button state
     const downloadBtn = document.querySelector(`[data-download="${registrationId}-${fileType}"]`);
     if (downloadBtn) {
       downloadBtn.disabled = false;
@@ -316,11 +409,8 @@ const apiUrl = `${API_BASE_URL}api/registration/download/${registrationId}/${fil
     }
    
     setFileLoading(false);
-  
-
   }
 };
-
   // View file
  const handleViewFile = async (registrationId, fileType, fileName) => {
   try {
