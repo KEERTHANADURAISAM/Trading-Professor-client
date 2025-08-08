@@ -106,7 +106,7 @@ const PlLinkShowcase = () => {
 
         {/* Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {['all', '2024', 'high-profit'].map((filterType) => (
+          {['all','high-profit'].map((filterType) => (
             <button
               key={filterType}
               onClick={() => setFilter(filterType)}

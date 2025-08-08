@@ -10,6 +10,7 @@ import PlLinkShowcase from "./Pages/PlLinkShowCase";
 import Footer from "./Pages/Footer";
 import AnimatedBackground from "./Pages/AnimatedGridBackground";
 import Payment from "./Pages/Payment";
+import CopyTradingForm from "./Pages/CopyTradingForm";
 
 function Layout({ children }) {
   const location = useLocation();
@@ -41,6 +42,7 @@ function App() {
             <Route path="/p&lrecords" element={<PlLinkShowcase />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/register" element={<TradingRegistrationForm />} />
+            <Route path="/copy&trading" element={<CopyTradingForm/>} />
             <Route path="/payment" element={<Payment />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
