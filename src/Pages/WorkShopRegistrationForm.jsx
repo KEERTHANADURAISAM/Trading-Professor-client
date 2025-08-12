@@ -399,8 +399,8 @@ const TradingRegistrationForm = () => {
       }
 
       // 🔥 FIXED: Use localhost:5000 instead of render URL
-      const API_URL ='https://trading-professor-server.onrender.com/';
-      // const API_URL = 'http://localhost:5000/';
+      // const API_URL ='https://trading-professor-server.onrender.com/';
+      const API_URL = 'http://localhost:5000/';
 
       const response = await fetch(`${API_URL}api/registration/submit`, {
         method: 'POST',

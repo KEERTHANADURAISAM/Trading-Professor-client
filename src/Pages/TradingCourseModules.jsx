@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import { 
-  Play, 
   CheckCircle, 
   Clock, 
-  Users, 
-  Star, 
   TrendingUp, 
   BookOpen, 
   Award,
   Calendar,
   MessageCircle,
-  CreditCard,
-  Smartphone,
-  Building,
   ChevronRight,
   Gift,
   ChevronUp,
