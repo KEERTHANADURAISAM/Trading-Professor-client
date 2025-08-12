@@ -44,7 +44,8 @@ const AdminDashboard = () => {
   const [copyTradingCurrentPage, setCopyTradingCurrentPage] = useState(1);
 
   // API Base URL
-  const API_BASE_URL = 'http://localhost:5000/';
+  // const API_BASE_URL = 'http://localhost:5000/';
+  const API_BASE_URL = 'https://tradingserver.onrender.com/';
 
   // Show notification
   const showNotification = (message, type = 'success') => {

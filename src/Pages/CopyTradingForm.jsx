@@ -374,7 +374,7 @@ const CopyTradingForm = () => {
   };
 
   // API URL
-  const API_URL = 'http://localhost:5000/';
+  const API_URL = 'https://tradingserver.onrender.com/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
