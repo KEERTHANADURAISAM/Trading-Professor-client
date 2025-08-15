@@ -25,8 +25,6 @@ const CopyTradingForm = () => {
     signatureFile: null,
     
     // Agreements
-    disclaimerAccepted: false,
-    riskWarningAccepted: false,
     termsAccepted: false
   });
 
@@ -266,11 +264,6 @@ const CopyTradingForm = () => {
       newErrors.investmentGoals = 'Investment goals must not exceed 500 characters';
     }
 
-    // Risk warning acceptance
-    if (!formData.riskWarningAccepted) {
-      newErrors.riskWarningAccepted = 'You must accept the risk warning to proceed';
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -301,10 +294,6 @@ const CopyTradingForm = () => {
     // Terms acceptance - MANDATORY
     if (!formData.termsAccepted) {
       newErrors.termsAccepted = 'You must accept the terms and conditions';
-    }
-
-    if (!formData.disclaimerAccepted) {
-      newErrors.disclaimerAccepted = 'You must accept the disclaimer';
     }
 
     setErrors(newErrors);
@@ -374,7 +363,8 @@ const CopyTradingForm = () => {
   };
 
   // API URL
-  const API_URL = 'https://tradingserver.onrender.com/';
+  const API_URL = 'https://trading-professor-server.onrender.com/';
+  // const API_URL = 'http://localhost:5000/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -465,12 +455,16 @@ const CopyTradingForm = () => {
     
     if (isValid) {
       setCurrentStep(prev => prev + 1);
+      // Scroll to top when moving to next step
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
   
   const prevStep = () => {
     setCurrentStep(prev => prev - 1);
     setErrors({}); // Clear errors when going back
+    // Scroll to top when moving to previous step
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Reset form function
@@ -494,8 +488,6 @@ const CopyTradingForm = () => {
       aadharNumber: '',
       aadharFile: null,
       signatureFile: null,
-      disclaimerAccepted: false,
-      riskWarningAccepted: false,
       termsAccepted: false
     });
   };
@@ -842,7 +834,7 @@ const CopyTradingForm = () => {
                 </div>
               </div>
 
-              <div>
+              <div className="max-w-2xl mx-auto">
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Investment Goals * <span className="text-xs text-gray-400">(20-500 characters)</span>
                 </label>
@@ -852,7 +844,7 @@ const CopyTradingForm = () => {
                   onChange={handleInputChange}
                   rows="4"
                   maxLength="500"
-                  placeholder="Please describe your investment goals, risk tolerance, and expectations in detail (minimum 20 characters)..."
+                  placeholder="Describe your investment goals, risk tolerance, and expectations..."
                   className={`w-full px-4 py-3 bg-gray-700 border rounded-lg text-white focus:outline-none focus:border-blue-400 resize-none ${
                     errors.investmentGoals ? 'border-red-500' : 'border-gray-600'
                   }`}
@@ -869,36 +861,6 @@ const CopyTradingForm = () => {
                     </span>
                   )}
                 </p>
-              </div>
-
-              {/* Risk Warning */}
-              <div className="bg-yellow-900/30 border border-yellow-600 rounded-lg p-6">
-                <div className="flex items-start">
-                  <AlertTriangle className="w-6 h-6 text-yellow-400 mr-3 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-yellow-400 mb-2">⚠️ Mandatory Risk Warning</h3>
-                    <p className="text-yellow-100 text-sm mb-3">
-                      Copy trading involves substantial risk of loss and is not suitable for all investors. Past performance is not indicative of future results. 
-                      You may lose some or all of your invested capital. Only invest money you can afford to lose completely.
-                    </p>
-                    <label className="flex items-start text-white cursor-pointer">
-                      <input
-                        type="checkbox"
-                        name="riskWarningAccepted"
-                        checked={formData.riskWarningAccepted}
-                        onChange={handleInputChange}
-                        className="mr-3 mt-1 w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
-                        required
-                      />
-                      <span className="text-sm">
-                        <strong>I acknowledge and accept</strong> that copy trading involves high financial risk and I may lose my entire investment
-                      </span>
-                    </label>
-                    {errors.riskWarningAccepted && (
-                      <p className="text-red-400 text-sm mt-1">{errors.riskWarningAccepted}</p>
-                    )}
-                  </div>
-                </div>
               </div>
             </div>
           )}
@@ -981,68 +943,24 @@ const CopyTradingForm = () => {
                 </div>
               </div>
 
-              {/* Final Terms and Conditions */}
-              <div className="bg-blue-900/30 border border-blue-600 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-blue-400 mb-3 flex items-center">
-                  <Shield className="w-5 h-5 mr-2" />
-                  Mandatory Final Agreements
-                </h3>
-                
-                <div className="space-y-4">
-                  <label className="flex items-start text-white cursor-pointer">
-                    <input
-                      type="checkbox"
-                      name="disclaimerAccepted"
-                      checked={formData.disclaimerAccepted}
-                      onChange={handleInputChange}
-                      className="mr-3 mt-1 w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 flex-shrink-0"
-                      required
-                    />
-                    <span className="text-sm">
-                      <strong>Investment Disclaimer:</strong> I acknowledge that this is a high-risk investment and I may lose all of my invested capital. 
-                      I understand that past performance does not guarantee future results and copy trading involves substantial financial risk.
-                    </span>
-                  </label>
-                  {errors.disclaimerAccepted && (
-                    <p className="text-red-400 text-sm">{errors.disclaimerAccepted}</p>
-                  )}
-
-                  <label className="flex items-start text-white cursor-pointer">
-                    <input
-                      type="checkbox"
-                      name="termsAccepted"
-                      checked={formData.termsAccepted}
-                      onChange={handleInputChange}
-                      className="mr-3 mt-1 w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 flex-shrink-0"
-                      required
-                    />
-                    <span className="text-sm">
-                      <strong>Terms & Conditions:</strong> I agree to all terms and conditions, privacy policy, and confirm that all information provided is accurate and truthful. 
-                      I understand the risks involved in copy trading and accept full responsibility for my investment decisions.
-                    </span>
-                  </label>
-                  {errors.termsAccepted && (
-                    <p className="text-red-400 text-sm">{errors.termsAccepted}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Important Final Disclaimer */}
-              <div className="bg-red-900/30 border border-red-600 rounded-lg p-6">
-                <div className="flex items-start">
-                  <AlertTriangle className="w-6 h-6 text-red-400 mr-3 flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="text-red-400 font-semibold mb-2">⚠️ Final Risk Disclaimer</h4>
-                    <ul className="text-red-100 text-sm space-y-1">
-                      <li>• <strong>High Risk:</strong> Copy trading can result in significant financial losses</li>
-                      <li>• <strong>No Guarantees:</strong> Past performance does not predict future results</li>
-                      <li>• <strong>Capital at Risk:</strong> You may lose your entire investment</li>
-                      <li>• <strong>Market Volatility:</strong> Financial markets are unpredictable and volatile</li>
-                      <li>• <strong>Personal Responsibility:</strong> All investment decisions are your own</li>
-                    </ul>
-                    <p className="text-red-200 text-xs mt-3 font-medium">
-                      Only proceed if you fully understand and accept these risks.
-                    </p>
+              {/* Terms and Conditions */}
+              <div className="bg-gray-700/50 rounded-lg p-6 border border-gray-600">
+                <div className="flex items-start space-x-3">
+                  <input
+                    type="checkbox"
+                    name="termsAccepted"
+                    checked={formData.termsAccepted}
+                    onChange={handleInputChange}
+                    className="mt-1 w-5 h-5 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500 focus:ring-2"
+                    required
+                  />
+                  <div className="flex-1">
+                    <label className="text-sm text-gray-300">
+                      I agree to the <span className="text-blue-400 cursor-pointer hover:underline">Terms and Conditions</span> and <span className="text-blue-400 cursor-pointer hover:underline">Privacy Policy</span> *
+                    </label>
+                    {errors.termsAccepted && (
+                      <p className="text-red-400 text-xs mt-1">{errors.termsAccepted}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1129,7 +1047,7 @@ const CopyTradingForm = () => {
             </div>
             <div className="flex items-center text-gray-300">
               <div className={`w-3 h-3 rounded-full mr-2 ${
-                formData.investmentAmount && formData.investmentGoals && formData.riskWarningAccepted &&
+                formData.investmentAmount && formData.investmentGoals &&
                 validateInvestmentAmount(formData.investmentAmount) && formData.investmentGoals.length >= 20
                   ? 'bg-green-400' : 'bg-gray-600'
               }`}></div>
@@ -1137,23 +1055,13 @@ const CopyTradingForm = () => {
             </div>
             <div className="flex items-center text-gray-300">
               <div className={`w-3 h-3 rounded-full mr-2 ${
-                formData.aadharFile && formData.signatureFile && formData.termsAccepted && formData.disclaimerAccepted
+                formData.aadharFile && formData.signatureFile && formData.termsAccepted
                   ? 'bg-green-400' : 'bg-gray-600'
               }`}></div>
               <span className="text-sm">Documents & Agreements</span>
             </div>
           </div>
-        </div>
-
-        {/* Security Note */}
-        <div className="mt-8 text-center">
-          <div className="inline-flex items-center text-gray-400 text-sm">
-            <Shield className="w-4 h-4 mr-2" />
-            <span>🔒 Your data is encrypted and secure. We comply with all financial regulations and data protection laws.</span>
-          </div>
-        </div>
-
-       
+        </div>   
       </div>
     </div>
   );
